@@ -4013,109 +4013,113 @@ WebHookConfigsData = Tap.Configs:AddSection('Data Sending') do
 end
 
 Teleporting = Tap.Teleport:AddSection('Teleport') do
-local section = Tabs.Teleports:AddSection("Select Teleport")
-    local IslandTPDropdownUI = Tabs.Teleports:AddDropdown("IslandTPDropdownUI", {
-        Title = "Area Teleport",
-        Values = teleportSpots,
-        Multi = false,
-        Default = nil,
-    })
-    IslandTPDropdownUI:OnChanged(function(Value)
-        if teleportSpots ~= nil and HumanoidRootPart ~= nil then
-            xpcall(function()
-                HumanoidRootPart.CFrame = TpSpotsFolder:FindFirstChild(Value).CFrame + Vector3.new(0, 5, 0)
-                IslandTPDropdownUI:SetValue(nil)
-            end,function (err)
-            end)
-        end
-    end)
-    local TotemTPDropdownUI = Tabs.Teleports:AddDropdown("TotemTPDropdownUI", {
-        Title = "Select Totem",
-        Values = {"Aurora", "Sundial", "Windset", "Smokescreen", "Tempest"},
-        Multi = false,
-        Default = nil,
-    })
-    TotemTPDropdownUI:OnChanged(function(Value)
-        SelectedTotem = Value
-        if SelectedTotem == "Aurora" then
-            HumanoidRootPart.CFrame = CFrame.new(-1811, -137, -3282)
-            TotemTPDropdownUI:SetValue(nil)
-        elseif SelectedTotem == "Sundial" then
-            HumanoidRootPart.CFrame = CFrame.new(-1148, 135, -1075)
-            TotemTPDropdownUI:SetValue(nil)
-        elseif SelectedTotem == "Windset" then
-            HumanoidRootPart.CFrame = CFrame.new(2849, 178, 2702)
-            TotemTPDropdownUI:SetValue(nil)
-        elseif SelectedTotem == "Smokescreen" then
-            HumanoidRootPart.CFrame = CFrame.new(2789, 140, -625)
-            TotemTPDropdownUI:SetValue(nil)
-        elseif SelectedTotem == "Tempest" then
-            HumanoidRootPart.CFrame = CFrame.new(35, 133, 1943)
-            TotemTPDropdownUI:SetValue(nil)
-        end
-    end)
-    local WorldEventTPDropdownUI = Tabs.Teleports:AddDropdown("WorldEventTPDropdownUI", {
-        Title = "Select World Event",
-        Values = {"Strange Whirlpool", "Great Hammerhead Shark", "Great White Shark", "Whale Shark", "The Depths - Serpent"},
-        Multi = false,
-        Default = nil,
-    })
-    WorldEventTPDropdownUI:OnChanged(function(Value)
-        SelectedWorldEvent = Value
-        if SelectedWorldEvent == "Strange Whirlpool" then
-            local offset = Vector3.new(25, 135, 25)
-            local WorldEvent = game.Workspace.zones.fishing:FindFirstChild("Isonade")
-            if not WorldEvent then WorldEventTPDropdownUI:SetValue(nil) return ShowNotification("Not found Strange Whirlpool") end
-            HumanoidRootPart.CFrame = CFrame.new(game.Workspace.zones.fishing.Isonade.Position + offset)                           -- Strange Whirlpool
-            WorldEventTPDropdownUI:SetValue(nil)
-        elseif SelectedWorldEvent == "Great Hammerhead Shark" then
-            local offset = Vector3.new(0, 135, 0)
-            local WorldEvent = game.Workspace.zones.fishing:FindFirstChild("Great Hammerhead Shark")
-            if not WorldEvent then WorldEventTPDropdownUI:SetValue(nil) return ShowNotification("Not found Great Hammerhead Shark") end
-            HumanoidRootPart.CFrame = CFrame.new(game.Workspace.zones.fishing["Great Hammerhead Shark"].Position + offset)         -- Great Hammerhead Shark
-            WorldEventTPDropdownUI:SetValue(nil)
-        elseif SelectedWorldEvent == "Great White Shark" then
-            local offset = Vector3.new(0, 135, 0)
-            local WorldEvent = game.Workspace.zones.fishing:FindFirstChild("Great White Shark")
-            if not WorldEvent then WorldEventTPDropdownUI:SetValue(nil) return ShowNotification("Not found Great White Shark") end
-            HumanoidRootPart.CFrame = CFrame.new(game.Workspace.zones.fishing["Great White Shark"].Position + offset)               -- Great White Shark
-            WorldEventTPDropdownUI:SetValue(nil)
-        elseif SelectedWorldEvent == "Whale Shark" then
-            local offset = Vector3.new(0, 135, 0)
-            local WorldEvent = game.Workspace.zones.fishing:FindFirstChild("Whale Shark")
-            if not WorldEvent then WorldEventTPDropdownUI:SetValue(nil) return ShowNotification("Not found Whale Shark") end
-            HumanoidRootPart.CFrame = CFrame.new(game.Workspace.zones.fishing["Whale Shark"].Position + offset)                     -- Whale Shark
-            WorldEventTPDropdownUI:SetValue(nil)
-        elseif SelectedWorldEvent == "The Depths - Serpent" then
-            local offset = Vector3.new(0, 50, 0)
-            local WorldEvent = game.Workspace.zones.fishing:FindFirstChild("The Depths - Serpent")
-            if not WorldEvent then WorldEventTPDropdownUI:SetValue(nil) return ShowNotification("Not found The Depths - Serpent") end
-            HumanoidRootPart.CFrame = CFrame.new(game.Workspace.zones.fishing["The Depths - Serpent"].Position + offset)            -- The Depths - Serpent
-            WorldEventTPDropdownUI:SetValue(nil)
-        end
-    end)
-    Tabs.Teleports:AddButton({
-        Title = "Teleport to Traveler Merchant",
-        Description = "Teleports to the Traveler Merchant.",
-        Callback = function()
-            local Merchant = game.Workspace.active:FindFirstChild("Merchant Boat")
-            if not Merchant then return ShowNotification("Not found Merchant") end
-            HumanoidRootPart.CFrame = CFrame.new(game.Workspace.active["Merchant Boat"].Boat["Merchant Boat"].r.HandlesR.Position)
-        end
-    })
-    Tabs.Teleports:AddButton({
-        Title = "Create Safe Zone",
-        Callback = function()
-            local SafeZone = Instance.new("Part")
-            SafeZone.Size = Vector3.new(30, 1, 30)
-            SafeZone.Position = Vector3.new(math.random(-2000,2000), math.random(50000,90000), math.random(-2000,2000))
-            SafeZone.Anchored = true
-            SafeZone.BrickColor = BrickColor.new("Bright purple")
-            SafeZone.Material = Enum.Material.ForceField
-            SafeZone.Parent = game.Workspace
-            HumanoidRootPart.CFrame = SafeZone.CFrame + Vector3.new(0, 5, 0)
-        end
-    })
+	-- Teleporting button for "Sunstone Island"
+Teleporting:AddButton({
+    Title = "Sunstone Island",
+    Callback = function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-913.630615234375, 137.29348754882812, -1129.8995361328125)
+    end
+})
+
+-- Teleporting button for "Roslit Bay"
+Teleporting:AddButton({
+    Title = "Roslit Bay",
+    Callback = function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-1501.675537109375, 133, 416.2070007324219)
+    end
+})
+
+-- Teleporting button for "Random Islands"
+Teleporting:AddButton({
+    Title = "Random Islands",
+    Callback = function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(237.6944580078125, 139.34976196289062, 43.103424072265625)
+    end
+})
+
+-- Teleporting button for "Moosewood"
+Teleporting:AddButton({
+    Title = "Moosewood",
+    Callback = function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(433.7972106933594, 147.07003784179688, 261.80218505859375)
+    end
+})
+
+-- Teleporting button for "Executive Headquarters"
+Teleporting:AddButton({
+    Title = "Executive Headquarters",
+    Callback = function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-36.46199035644531, -246.55001831054688, 205.77120971679688)
+    end
+})
+
+-- Teleporting button for "Enchant Room"
+Teleporting:AddButton({
+    Title = "Enchant Room",
+    Callback = function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(1310.048095703125, -805.292236328125, -162.34507751464844)
+    end
+})
+
+-- Teleporting button for "Statue Of Sovereignty"
+Teleporting:AddButton({
+    Title = "Statue Of Sovereignty",
+    Callback = function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(22.098665237426758, 159.01470947265625, -1039.8543701171875)
+    end
+})
+
+-- Teleporting button for "Mushgrove Swamp"
+Teleporting:AddButton({
+    Title = "Mushgrove Swamp",
+    Callback = function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(2442.805908203125, 130.904052734375, -686.1648559570312)
+    end
+})
+
+-- Teleporting button for "Snowcap Island"
+Teleporting:AddButton({
+    Title = "Snowcap Island",
+    Callback = function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(2589.534912109375, 134.9249267578125, 2333.099365234375)
+    end
+})
+
+-- Teleporting button for "Terrapin Island"
+Teleporting:AddButton({
+    Title = "Terrapin Island",
+    Callback = function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(152.3716278076172, 154.91015625, 2000.9171142578125)
+    end
+})
+
+-- Teleporting button for "Terrapin Island"
+Teleporting:AddButton({
+    Title = "Enchant Relic",
+    Callback = function()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(1309.2784423828125, -802.427001953125, -83.36397552490234)
+    end
+})
+
+-- Teleporting button for "Terrapin Island"
+Teleporting:AddButton({
+    Title = "Best Spot",
+    Callback = function()
+    local forceFieldPart = Instance.new("Part") -- Create a new part
+forceFieldPart.Size = Vector3.new(10, 1, 10) -- Set the size of the part (10x1x10)
+forceFieldPart.Position = Vector3.new(1447.8507080078125, 131.49998474121094, -7649.64501953125) -- Adjusted position (2 units lower)
+forceFieldPart.Anchored = true -- Make sure the part does not fall
+forceFieldPart.BrickColor = BrickColor.new("White") -- Set the color of the part to white
+forceFieldPart.Material = Enum.Material.SmoothPlastic -- Set the material of the part
+forceFieldPart.Parent = game.Workspace -- Parent the part to the Workspace
+
+-- Create a ForceField
+local forceField = Instance.new("ForceField") -- Create a new ForceField object
+forceField.Parent = forceFieldPart -- Parent the ForceField to the part
+wait()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(1447.8507080078125, 133.49998474121094, -7649.64501953125)
+    end
+})
 end
 
 
